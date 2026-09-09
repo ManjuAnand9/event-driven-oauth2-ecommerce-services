@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>NovaCart | Distributed System Architecture</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background-color: #f8fafc;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        /* =========================
+       HEADER
+       ========================= */
+
+        .topbar {
+            height: 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 7%;
+
+            background-color: #ffffff;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: #111827;
+        }
+
+        .brand span {
+            color: #f59e0b;
+        }
+
+        .back-link {
+            text-decoration: none;
+
+            color: #334155;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            padding: 9px 14px;
+
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* =========================
+       HERO
+       ========================= */
+
+        .hero {
+            padding: 95px 7% 105px;
+
+            color: white;
+
+            background:
+                radial-gradient(circle at 85% 20%,
+                    rgba(245, 158, 11, 0.27),
+                    transparent 26%),
+                linear-gradient(135deg,
+                    #0f172a,
+                    #182235);
+        }
+
+        .hero-inner {
+            max-width: 1180px;
+            margin: auto;
+        }
+
+        .eyebrow {
+            display: inline-block;
+
+            padding: 7px 11px;
+
+            margin-bottom: 20px;
+
+            border-radius: 999px;
+
+            border: 1px solid rgba(251, 191, 36, 0.32);
+
+            background-color:
+                rgba(251, 191, 36, 0.1);
+
+            color: #fbbf24;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+        }
+
+        .hero h1 {
+            max-width: 850px;
+
+            margin-bottom: 24px;
+
+            font-size:
+                clamp(40px, 6vw, 68px);
+
+            line-height: 1.03;
+
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            max-width: 1000px;
+
+            color: #cbd5e1;
+
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        /* =========================
+       QUICK METRICS
+       ========================= */
+
+        .metrics {
+            max-width: 1180px;
+
+            margin: -38px auto 55px;
+
+            padding: 0 24px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+        }
+
+        .metric-card {
+            background-color: white;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 16px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 12px 35px rgba(15, 23, 42, 0.08);
+        }
+
+        .metric-card strong {
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-size: 18px;
+
+            color: #111827;
+        }
+
+        .metric-card span {
+            color: #64748b;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* =========================
+       GENERAL SECTION
+       ========================= */
+
+        .section {
+            max-width: 1180px;
+
+            margin: auto;
+
+            padding: 55px 24px 70px;
+        }
+
+        .section-tag {
+            margin-bottom: 8px;
+
+            color: #f59e0b;
+
+            font-size: 11px;
+            font-weight: 900;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+        .section h2 {
+            margin-bottom: 12px;
+
+            font-size: 32px;
+
+            letter-spacing: -0.8px;
+        }
+
+        .section-description {
+            max-width: 820px;
+
+            margin-bottom: 35px;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+        /* =========================
+       FUNCTIONALITIES
+       ========================= */
+
+        .functionality-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .functionality-card {
+            min-height: 220px;
+
+            padding: 24px;
+
+            background-color: white;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 17px;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .functionality-card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 16px 35px rgba(15, 23, 42, 0.09);
+        }
+
+        .functionality-icon {
+            width: 42px;
+            height: 42px;
+
+            margin-bottom: 17px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background-color: #fff7df;
+
+            font-size: 19px;
+        }
+
+        .functionality-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-bottom: 9px;
+        }
+
+        .functionality-header h3 {
+            font-size: 16px;
+        }
+
+        .functionality-card p {
+            color: #64748b;
+
+            font-size: 12px;
+
+            margin-bottom: 15px;
+        }
+
+        /* =========================
+       BADGES / TAGS
+       ========================= */
+
+        .badge {
+            display: inline-block;
+
+            padding: 4px 8px;
+
+            border-radius: 999px;
+
+            background-color: #ecfdf5;
+
+            color: #15803d;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+        .badge.planned {
+            background-color: #fff7ed;
+            color: #c2410c;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 6px;
+        }
+
+        .tech-tag {
+            padding: 5px 8px;
+
+            border-radius: 6px;
+
+            background-color: #f1f5f9;
+
+            color: #475569;
+
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        /* =========================
+       ARCHITECTURE
+       ========================= */
+
+        .architecture {
+            padding: 40px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 18px;
+
+            background-color: white;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 22px;
+        }
+
+        .architecture-row {
+            width: 100%;
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 16px;
+        }
+
+        .architecture-box {
+            min-width: 180px;
+
+            padding: 17px 20px;
+
+            text-align: center;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            background-color: #f8fafc;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            box-shadow:
+                0 5px 14px rgba(15, 23, 42, 0.05);
+        }
+
+        .architecture-box.gateway {
+            background-color: #111827;
+            color: white;
+            border-color: #111827;
+        }
+
+        .architecture-box.kafka {
+            background-color: #fff8e1;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        .architecture-box.s3 {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+
+        .architecture-arrow {
+            color: #94a3b8;
+
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .down-arrow {
+            color: #94a3b8;
+
+            font-size: 24px;
+        }
+
+        /* =========================
+       SERVICE CARDS
+       ========================= */
+
+        .service-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+        }
+
+        .service-card {
+            padding: 25px;
+
+            background-color: white;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 17px;
+
+            transition:
+                transform 0.16s ease,
+                box-shadow 0.16s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .service-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 10px;
+
+            gap: 10px;
+        }
+
+        .service-title h3 {
+            font-size: 17px;
+        }
+
+        .service-card p {
+            margin-bottom: 15px;
+
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+       WORKFLOW
+       ========================= */
+
+        .workflow {
+            display: flex;
+            flex-direction: column;
+
+            gap: 14px;
+        }
+
+        .workflow-step {
+            display: grid;
+
+            grid-template-columns:
+                54px 1fr;
+
+            gap: 18px;
+
+            padding: 22px;
+
+            background-color: white;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 14px;
+        }
+
+        .step-number {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background-color: #111827;
+
+            color: #fbbf24;
+
+            font-weight: 900;
+        }
+
+        .workflow-step h3 {
+            margin-bottom: 5px;
+
+            font-size: 15px;
+        }
+
+        .workflow-step p {
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+        .code {
+            display: inline-block;
+
+            margin-top: 10px;
+
+            padding: 5px 8px;
+
+            border-radius: 5px;
+
+            background-color: #f1f5f9;
+
+            color: #334155;
+
+            font-family:
+                ui-monospace,
+                SFMono-Regular,
+                Menlo,
+                monospace;
+
+            font-size: 10px;
+        }
+
+        /* =========================
+       COMMUNICATION
+       ========================= */
+
+        .communication-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 20px;
+        }
+
+        .communication-card {
+            padding: 28px;
+
+            background-color: white;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 18px;
+        }
+
+        .communication-icon {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 17px;
+
+            border-radius: 11px;
+
+            background-color: #f1f5f9;
+
+            font-size: 19px;
+        }
+
+        .communication-card h3 {
+            margin-bottom: 7px;
+        }
+
+        .communication-card p {
+            margin-bottom: 17px;
+
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+        .flow-line {
+            padding: 12px;
+
+            border-radius: 8px;
+
+            background-color: #f8fafc;
+
+            color: #475569;
+
+            font-size: 10px;
+
+            font-family:
+                ui-monospace,
+                SFMono-Regular,
+                monospace;
+        }
+
+        /* =========================
+       SECURITY
+       ========================= */
+
+        .security {
+            padding: 35px;
+
+            border-radius: 22px;
+
+            color: white;
+
+            background:
+                linear-gradient(135deg,
+                    #111827,
+                    #1e293b);
+        }
+
+        .security h2 {
+            color: white;
+        }
+
+        .security-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .security-item {
+            padding: 18px;
+
+            border-radius: 12px;
+
+            background-color:
+                rgba(255, 255, 255, 0.06);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .security-item strong {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #fbbf24;
+
+            font-size: 13px;
+        }
+
+        .security-item span {
+            color: #cbd5e1;
+
+            font-size: 11px;
+        }
+
+        /* =========================
+       DATA OWNERSHIP
+       ========================= */
+
+        .data-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+        }
+
+        .data-card {
+            padding: 22px;
+
+            background-color: white;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 15px;
+        }
+
+        .data-card h3 {
+            margin-bottom: 7px;
+
+            font-size: 14px;
+        }
+
+        .data-card p {
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+        /* =========================
+       STACK
+       ========================= */
+
+        .stack {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 10px;
+        }
+
+        .stack-item {
+            padding: 9px 13px;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 8px;
+
+            background-color: white;
+
+            color: #334155;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* =========================
+       DESIGN DECISIONS
+       ========================= */
+
+        .decision-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+        }
+
+        .decision-card {
+            padding: 24px;
+
+            border-left:
+                4px solid #f59e0b;
+
+            border-radius: 12px;
+
+            background-color: white;
+
+            box-shadow:
+                0 6px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .decision-card h3 {
+            margin-bottom: 7px;
+
+            font-size: 15px;
+        }
+
+        .decision-card p {
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+       FOOTER
+       ========================= */
+
+        footer {
+            margin-top: 60px;
+
+            padding: 50px 7%;
+
+            text-align: center;
+
+            background-color: #0f172a;
+
+            color: #94a3b8;
+        }
+
+        footer strong {
+            color: white;
+        }
+
+        footer p {
+            margin-top: 7px;
+
+            font-size: 11px;
+        }
+
+        /* =========================
+       RESPONSIVE
+       ========================= */
+
+        @media (max-width: 950px) {
+            .functionality-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .metrics {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .data-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 760px) {
+
+            .service-grid,
+            .communication-grid,
+            .decision-grid,
+            .security-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .architecture-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            .functionality-grid,
+            .metrics,
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding:
+                    65px 24px 70px;
+            }
+
+            .topbar {
+                padding: 0 22px;
+            }
+
+            .hero h1 {
+                letter-spacing: -1px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+
+    <header class="topbar">
+
+        <div class="brand">
+            NOVA<span>CART</span>
+        </div>
+
+        <a class="back-link" href="/">
+            ← Back to Store
+        </a>
+
+    </header>
+
+
+
+    <section class="hero">
+
+        <div class="hero-inner">
+
+            <div class="eyebrow">
+                DISTRIBUTED ECOMMERCE
+            </div>
+
+            <h1>
+                A production-style
+                distributed systems platform.
+            </h1>
+
+            <p>
+                Distributed ecommerce platform showcasing resilient REST APIs,
+                loosely coupled microservices, synchronous and asynchronous
+                service-to-service communication, event-driven workflows,
+                API Gateway routing, Kafka messaging, OAuth2/JWT security,
+                isolated sql databases, private S3 object storage,
+                and Dockerized services.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <div class="metrics">
+
+        <div class="metric-card">
+            <strong>Microservices</strong>
+            <span>
+                Independent business capabilities
+            </span>
+        </div>
+
+        <div class="metric-card">
+            <strong>Sync + Async</strong>
+            <span>
+                REST + Kafka communication
+            </span>
+        </div>
+
+        <div class="metric-card">
+            <strong>OAuth2 / JWT</strong>
+            <span>
+                Authentication and RBAC
+            </span>
+        </div>
+
+        <div class="metric-card">
+            <strong>Database per Service</strong>
+            <span>
+                Independent data ownership
+            </span>
+        </div>
+
+    </div>
+
+
+
+    <!-- ===================================================
+     FUNCTIONALITIES
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Functionalities
+        </div>
+
+        <h2>
+            Core platform capabilities
+        </h2>
+
+        <p class="section-description">
+            NovaCart combines a complete ecommerce experience with
+            distributed backend services, secure authentication,
+            asynchronous processing and independently owned data.
+        </p>
+
+
+        <div class="functionality-grid">
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    🔐
+                </div>
+
+                <div class="functionality-header">
+                    <h3>User Authentication</h3>
+                    <span class="badge">
+                        OAuth2
+                    </span>
+                </div>
+
+                <p>
+                    Account creation, secure login, logout, JWT sessions,
+                    role-based access and centralized authentication.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Keycloak</span>
+                    <span class="tech-tag">OAuth2</span>
+                    <span class="tech-tag">JWT</span>
+                    <span class="tech-tag">RBAC</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    🔎
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Product Discovery</h3>
+                    <span class="badge">
+                        REST
+                    </span>
+                </div>
+
+                <p>
+                    Browse the catalog, search products, explore categories,
+                    view deals and navigate to individual product pages.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">React</span>
+                    <span class="tech-tag">REST API</span>
+                    <span class="tech-tag">Product Service</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    🛍
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Product Details</h3>
+                    <span class="badge">
+                        Dynamic
+                    </span>
+                </div>
+
+                <p>
+                    Individual product views display product metadata,
+                    pricing, private images, categories, quantity controls,
+                    ratings and customer reviews.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Product API</span>
+                    <span class="tech-tag">S3</span>
+                    <span class="tech-tag">React Router</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    🛒
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Shopping Cart</h3>
+                    <span class="badge">
+                        Stateful
+                    </span>
+                </div>
+
+                <p>
+                    Add products, increase or decrease quantities,
+                    remove products and calculate order totals while
+                    maintaining cart state across page refreshes.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">React State</span>
+                    <span class="tech-tag">localStorage</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    📦
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Distributed Checkout</h3>
+                    <span class="badge">
+                        Sync + Async
+                    </span>
+                </div>
+
+                <p>
+                    Checkout resolves the authenticated customer,
+                    communicates with downstream services, persists
+                    the order and returns a unique order ID.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Order Service</span>
+                    <span class="tech-tag">Feign</span>
+                    <span class="tech-tag">Kafka</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    🧾
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Order History</h3>
+                    <span class="badge">
+                        Authenticated
+                    </span>
+                </div>
+
+                <p>
+                    Logged-in customers can retrieve previous orders,
+                    product information, order totals, payment state,
+                    shipping details and fulfillment information.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Order Service</span>
+                    <span class="tech-tag">Customer Email</span>
+                    <span class="tech-tag">REST</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    🔔
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Email Notifications</h3>
+
+                    <span class="badge planned">
+                        Planned
+                    </span>
+                </div>
+
+                <p>
+                    Kafka order events will trigger a Notification Service
+                    that sends transactional emails asynchronously without
+                    blocking the checkout request.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Kafka Consumer</span>
+                    <span class="tech-tag">ORDER_CREATED</span>
+                    <span class="tech-tag">Email</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    ☁️
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Private Product Images</h3>
+                    <span class="badge">
+                        S3
+                    </span>
+                </div>
+
+                <p>
+                    Product images remain private in Amazon S3 while
+                    temporary presigned upload and download URLs provide
+                    controlled browser access.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Amazon S3</span>
+                    <span class="tech-tag">Presigned PUT</span>
+                    <span class="tech-tag">Presigned GET</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    ⚙️
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Admin Product Management</h3>
+                    <span class="badge">
+                        ADMIN
+                    </span>
+                </div>
+
+                <p>
+                    Only authenticated ADMIN users can access product
+                    creation functionality and upload product images.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">RBAC</span>
+                    <span class="tech-tag">Product Service</span>
+                    <span class="tech-tag">S3</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    🚪
+                </div>
+
+                <div class="functionality-header">
+                    <h3>API Gateway Routing</h3>
+                    <span class="badge">
+                        Gateway
+                    </span>
+                </div>
+
+                <p>
+                    Client traffic enters through a centralized gateway
+                    responsible for routing requests to the correct
+                    backend microservice.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">Spring Cloud Gateway</span>
+                    <span class="tech-tag">JWT</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    ↔️
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Inter-Service Communication</h3>
+
+                    <span class="badge">
+                        Distributed
+                    </span>
+                </div>
+
+                <p>
+                    Services use synchronous REST communication where an
+                    immediate response is required and Kafka where workflows
+                    can be asynchronously decoupled.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">REST</span>
+                    <span class="tech-tag">Feign</span>
+                    <span class="tech-tag">Kafka</span>
+                </div>
+
+            </div>
+
+
+
+            <div class="functionality-card">
+
+                <div class="functionality-icon">
+                    🗄
+                </div>
+
+                <div class="functionality-header">
+                    <h3>Independent Persistence</h3>
+
+                    <span class="badge">
+                        Isolation
+                    </span>
+                </div>
+
+                <p>
+                    Services own their own PostgreSQL persistence rather
+                    than relying on one shared application database.
+                </p>
+
+                <div class="tech-tags">
+                    <span class="tech-tag">PostgreSQL</span>
+                    <span class="tech-tag">DB per Service</span>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     ARCHITECTURE
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Architecture
+        </div>
+
+        <h2>
+            High-level system design
+        </h2>
+
+        <p class="section-description">
+            Client requests enter through the API Gateway.
+            Business capabilities are divided into independent
+            microservices with isolated persistence and explicit
+            communication boundaries.
+        </p>
+
+
+        <div class="architecture">
+
+
+            <div class="architecture-row">
+
+                <div class="architecture-box">
+                    React Client
+                </div>
+
+                <span class="architecture-arrow">
+                    →
+                </span>
+
+                <div class="architecture-box gateway">
+                    API Gateway
+                </div>
+
+                <span class="architecture-arrow">
+                    →
+                </span>
+
+                <div class="architecture-box">
+                    OAuth2 / JWT
+                </div>
+
+            </div>
+
+
+            <div class="down-arrow">
+                ↓
+            </div>
+
+
+            <div class="architecture-row">
+
+                <div class="architecture-box">
+                    Customer Service
+                </div>
+
+                <div class="architecture-box">
+                    Product Service
+                </div>
+
+                <div class="architecture-box">
+                    Order Service
+                </div>
+
+                <div class="architecture-box">
+                    Inventory Service
+                </div>
+
+            </div>
+
+
+            <div class="down-arrow">
+                ↓
+            </div>
+
+
+            <div class="architecture-row">
+
+                <div class="architecture-box kafka">
+                    Apache Kafka
+                </div>
+
+                <div class="architecture-box">
+                    Notification Service
+                </div>
+
+                <div class="architecture-box s3">
+                    Amazon S3
+                </div>
+
+            </div>
+
+
+            <div class="down-arrow">
+                ↓
+            </div>
+
+
+            <div class="architecture-row">
+
+                <div class="architecture-box">
+                    Customer DB
+                </div>
+
+                <div class="architecture-box">
+                    Product DB
+                </div>
+
+                <div class="architecture-box">
+                    Order DB
+                </div>
+
+                <div class="architecture-box">
+                    Inventory DB
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     SERVICES
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Service Boundaries
+        </div>
+
+        <h2>
+            Loosely coupled microservices
+        </h2>
+
+        <p class="section-description">
+            Each service owns a focused business capability and
+            exposes APIs or events instead of directly sharing its
+            internal database.
+        </p>
+
+
+        <div class="service-grid">
+
+
+            <div class="service-card">
+
+                <div class="service-title">
+
+                    <h3>
+                        Customer Service
+                    </h3>
+
+                    <span class="badge">
+                        REST
+                    </span>
+
+                </div>
+
+                <p>
+                    Owns customer profiles, email lookup,
+                    shipping information and application-level
+                    customer identity.
+                </p>
+
+                <div class="tech-tags">
+
+                    <span class="tech-tag">
+                        Spring Boot
+                    </span>
+
+                    <span class="tech-tag">
+                        PostgreSQL
+                    </span>
+
+                    <span class="tech-tag">
+                        REST
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="service-card">
+
+                <div class="service-title">
+
+                    <h3>
+                        Product Service
+                    </h3>
+
+                    <span class="badge">
+                        REST + S3
+                    </span>
+
+                </div>
+
+                <p>
+                    Owns product metadata and integrates with private S3
+                    storage using temporary presigned URLs.
+                </p>
+
+                <div class="tech-tags">
+
+                    <span class="tech-tag">
+                        Spring Boot
+                    </span>
+
+                    <span class="tech-tag">
+                        PostgreSQL
+                    </span>
+
+                    <span class="tech-tag">
+                        Amazon S3
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="service-card">
+
+                <div class="service-title">
+
+                    <h3>
+                        Order Service
+                    </h3>
+
+                    <span class="badge">
+                        Sync + Async
+                    </span>
+
+                </div>
+
+                <p>
+                    Coordinates checkout, communicates with downstream
+                    services, persists orders and publishes Kafka events.
+                </p>
+
+                <div class="tech-tags">
+
+                    <span class="tech-tag">
+                        Spring Boot
+                    </span>
+
+                    <span class="tech-tag">
+                        Feign
+                    </span>
+
+                    <span class="tech-tag">
+                        Kafka
+                    </span>
+
+                    <span class="tech-tag">
+                        PostgreSQL
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="service-card">
+
+                <div class="service-title">
+
+                    <h3>
+                        Notification Service
+                    </h3>
+
+                    <span class="badge planned">
+                        Planned
+                    </span>
+
+                </div>
+
+                <p>
+                    Will consume Kafka order events and send transactional
+                    customer emails independently of Order Service.
+                </p>
+
+                <div class="tech-tags">
+
+                    <span class="tech-tag">
+                        Kafka Consumer
+                    </span>
+
+                    <span class="tech-tag">
+                        Email
+                    </span>
+
+                    <span class="tech-tag">
+                        Async
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     ORDER WORKFLOW
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Request Lifecycle
+        </div>
+
+        <h2>
+            Order placement workflow
+        </h2>
+
+        <p class="section-description">
+            Checkout combines authenticated client requests,
+            synchronous service calls, database persistence and
+            asynchronous event publication.
+        </p>
+
+
+        <div class="workflow">
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <div>
+
+                    <h3>
+                        User initiates checkout
+                    </h3>
+
+                    <p>
+                        React sends the order request through the API
+                        Gateway using the authenticated session.
+                    </p>
+
+                    <span class="code">
+                        React → API Gateway
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <div>
+
+                    <h3>
+                        Customer identity is resolved
+                    </h3>
+
+                    <p>
+                        The authenticated user's email is resolved against
+                        Customer Service to obtain the application customer ID.
+                    </p>
+
+                    <span class="code">
+                        JWT Email → Customer Service → customerId
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <div>
+
+                    <h3>
+                        Order Service calls downstream services
+                    </h3>
+
+                    <p>
+                        Required customer and product information is retrieved
+                        through synchronous service-to-service REST calls.
+                    </p>
+
+                    <span class="code">
+                        Order → Customer / Product
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    04
+                </div>
+
+                <div>
+
+                    <h3>
+                        Order is persisted
+                    </h3>
+
+                    <p>
+                        The final order state is stored in Order Service's
+                        independently owned PostgreSQL database.
+                    </p>
+
+                    <span class="code">
+                        Order Service → Order DB
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    05
+                </div>
+
+                <div>
+
+                    <h3>
+                        Kafka event is published
+                    </h3>
+
+                    <p>
+                        Order creation publishes an ORDER_CREATED event
+                        for independently running consumers.
+                    </p>
+
+                    <span class="code">
+                        Order Service → Kafka → ORDER_CREATED
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    06
+                </div>
+
+                <div>
+
+                    <h3>
+                        Client receives order ID
+                    </h3>
+
+                    <p>
+                        React receives the successful OrderResponse and
+                        presents the unique order identifier to the customer.
+                    </p>
+
+                    <span class="code">
+                        OrderResponse.orderid → React
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     COMMUNICATION
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Distributed Communication
+        </div>
+
+        <h2>
+            Synchronous + asynchronous communication
+        </h2>
+
+        <p class="section-description">
+            Communication style is selected according to whether the
+            caller requires an immediate downstream response.
+        </p>
+
+
+        <div class="communication-grid">
+
+
+            <div class="communication-card">
+
+                <div class="communication-icon">
+                    ↔
+                </div>
+
+                <h3>
+                    Synchronous REST
+                </h3>
+
+                <p>
+                    Used for request paths where Order Service requires
+                    downstream data before completing the operation.
+                </p>
+
+                <div class="flow-line">
+                    Order Service → Customer Service
+                    <br />
+                    Order Service → Product Service
+                </div>
+
+            </div>
+
+
+
+            <div class="communication-card">
+
+                <div class="communication-icon">
+                    ⚡
+                </div>
+
+                <h3>
+                    Asynchronous Kafka
+                </h3>
+
+                <p>
+                    Used to decouple downstream event processing from
+                    the synchronous customer request path.
+                </p>
+
+                <div class="flow-line">
+                    Order Service → Kafka
+                    <br />
+                    Kafka → Event Consumers
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     S3 WORKFLOW
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Object Storage
+        </div>
+
+        <h2>
+            Private S3 image workflow
+        </h2>
+
+        <p class="section-description">
+            Product images stay in a private bucket while temporary
+            presigned URLs allow controlled browser uploads and reads.
+        </p>
+
+
+        <div class="workflow">
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <div>
+
+                    <h3>
+                        Request presigned upload URL
+                    </h3>
+
+                    <p>
+                        React asks Product Service for a temporary S3
+                        upload URL.
+                    </p>
+
+                    <span class="code">
+                        React → Product Service → S3 Presigner
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <div>
+
+                    <h3>
+                        Browser uploads directly to S3
+                    </h3>
+
+                    <p>
+                        Product image bytes do not need to pass through
+                        Product Service.
+                    </p>
+
+                    <span class="code">
+                        Browser → Presigned PUT → S3
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <div>
+
+                    <h3>
+                        Store image key
+                    </h3>
+
+                    <p>
+                        Product Service persists the stable object key
+                        rather than a temporary signed URL.
+                    </p>
+
+                    <span class="code">
+                        imageKey → Product DB
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="workflow-step">
+
+                <div class="step-number">
+                    04
+                </div>
+
+                <div>
+
+                    <h3>
+                        Generate temporary GET URL
+                    </h3>
+
+                    <p>
+                        Product APIs generate a fresh presigned image URL
+                        when product information is requested.
+                    </p>
+
+                    <span class="code">
+                        imageKey → Presigned GET → Browser
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     DATA OWNERSHIP
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Persistence
+        </div>
+
+        <h2>
+            Independent data ownership
+        </h2>
+
+        <p class="section-description">
+            Each microservice owns its own persistence rather than
+            accessing another service's tables directly.
+        </p>
+
+
+        <div class="data-grid">
+
+
+            <div class="data-card">
+
+                <h3>
+                    Customer DB
+                </h3>
+
+                <p>
+                    Profiles, customer identity and shipping information.
+                </p>
+
+            </div>
+
+
+            <div class="data-card">
+
+                <h3>
+                    Product DB
+                </h3>
+
+                <p>
+                    Product metadata, price, category and S3 image keys.
+                </p>
+
+            </div>
+
+
+            <div class="data-card">
+
+                <h3>
+                    Order DB
+                </h3>
+
+                <p>
+                    Orders, order items, payment information and status.
+                </p>
+
+            </div>
+
+
+            <div class="data-card">
+
+                <h3>
+                    Inventory DB
+                </h3>
+
+                <p>
+                    Inventory state owned independently by Inventory Service.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     SECURITY
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="security">
+
+            <div class="section-tag">
+                Security
+            </div>
+
+            <h2>
+                Authentication and authorization
+            </h2>
+
+            <div class="security-grid">
+
+
+                <div class="security-item">
+
+                    <strong>
+                        OAuth2 / JWT
+                    </strong>
+
+                    <span>
+                        Access tokens protect authenticated API requests.
+                    </span>
+
+                </div>
+
+
+                <div class="security-item">
+
+                    <strong>
+                        Role-Based Access Control
+                    </strong>
+
+                    <span>
+                        USER and ADMIN roles protect privileged operations.
+                    </span>
+
+                </div>
+
+
+                <div class="security-item">
+
+                    <strong>
+                        Social Authentication
+                    </strong>
+
+                    <span>
+                        Social identity-provider UI is being integrated
+                        through the centralized authentication layer.
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     DESIGN DECISIONS
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Engineering Decisions
+        </div>
+
+        <h2>
+            Why the system is designed this way
+        </h2>
+
+
+        <div class="decision-grid">
+
+
+            <div class="decision-card">
+
+                <h3>
+                    Why Kafka?
+                </h3>
+
+                <p>
+                    Event consumers should not increase the latency or
+                    coupling of the synchronous order creation path.
+                </p>
+
+            </div>
+
+
+            <div class="decision-card">
+
+                <h3>
+                    Why database per service?
+                </h3>
+
+                <p>
+                    Independent persistence reduces direct data coupling
+                    and preserves clear service ownership.
+                </p>
+
+            </div>
+
+
+            <div class="decision-card">
+
+                <h3>
+                    Why presigned S3 URLs?
+                </h3>
+
+                <p>
+                    Large image payloads can move directly between the
+                    browser and object storage while the bucket stays private.
+                </p>
+
+            </div>
+
+
+            <div class="decision-card">
+
+                <h3>
+                    Why API Gateway?
+                </h3>
+
+                <p>
+                    The client receives one entry point while internal
+                    services remain independently addressable and protected.
+                </p>
+
+            </div>
+
+
+            <div class="decision-card">
+
+                <h3>
+                    Why synchronous REST?
+                </h3>
+
+                <p>
+                    Some workflows require immediate downstream data before
+                    the caller can safely complete its request.
+                </p>
+
+            </div>
+
+
+            <div class="decision-card">
+
+                <h3>
+                    Why OAuth2/JWT?
+                </h3>
+
+                <p>
+                    Stateless access tokens allow authenticated requests
+                    to propagate identity and authorization claims.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+     TECH STACK
+     =================================================== -->
+
+    <section class="section">
+
+        <div class="section-tag">
+            Technology
+        </div>
+
+        <h2>
+            Technology stack
+        </h2>
+
+
+        <div class="stack">
+
+            <div class="stack-item">
+                Java
+            </div>
+
+            <div class="stack-item">
+                Spring Boot
+            </div>
+
+            <div class="stack-item">
+                Spring Cloud Gateway
+            </div>
+
+            <div class="stack-item">
+                React
+            </div>
+
+            <div class="stack-item">
+                PostgreSQL
+            </div>
+
+            <div class="stack-item">
+                Apache Kafka
+            </div>
+
+            <div class="stack-item">
+                OAuth2
+            </div>
+
+            <div class="stack-item">
+                JWT
+            </div>
+
+            <div class="stack-item">
+                Keycloak
+            </div>
+
+            <div class="stack-item">
+                OpenFeign
+            </div>
+
+            <div class="stack-item">
+                Amazon S3
+            </div>
+
+            <div class="stack-item">
+                Docker
+            </div>
+
+            <div class="stack-item">
+                REST APIs
+            </div>
+
+            <div class="stack-item">
+                Event-Driven Architecture
+            </div>
+
+            <div class="stack-item">
+                Microservices
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <footer>
+
+        <strong>
+            NovaCart — Distributed Ecommerce Platform
+        </strong>
+
+        <p>
+            Built to demonstrate practical microservices,
+            distributed systems and backend engineering concepts.
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

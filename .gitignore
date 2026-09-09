@@ -1,0 +1,25 @@
+# Maven build
+target/
+**/target/
+
+# IntelliJ
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Kafka runtime data
+data/
+
+
+/api-gateway/
+/api-gateway 2/
+/keycloak-import/
+**/src/test/
