@@ -21,5 +21,8 @@ data/
 
 /api-gateway/
 /api-gateway 2/
-/keycloak-import/
 **/src/test/
+
+/keycloak-import/*.json
+!/keycloak-import/ecommerce-app-realm-sanitized.json
+/keycloak-private-backup/
