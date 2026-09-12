@@ -26,3 +26,16 @@ data/
 /keycloak-import/*.json
 !/keycloak-import/ecommerce-app-realm-sanitized.json
 /keycloak-private-backup/
+
+
+# Old database initialization files
+/db-init/*-init.sql
+
+# React dependencies and build output
+**/node_modules/
+**/dist/
+
+# All local environment files
+.env
+.env.*
+!.env.example
