@@ -2,9 +2,11 @@ import { useEffect } from "react";
 
 import { saveTokens } from "../services/authservice";
 
+const API_GATEWAY =
+    import.meta.env.VITE_API_GATEWAY ||
+    "http://localhost:8081";
+
 export default function AuthCallback() {
-
-
     useEffect(() => {
         async function finishSocialLogin() {
             try {
@@ -26,7 +28,7 @@ export default function AuthCallback() {
                 }
 
                 const response = await fetch(
-                    `http://localhost:8081/auth/social-callback`
+                    `${API_GATEWAY}/auth/social-callback`
                     + `?code=${encodeURIComponent(code)}`
                     + `&codeVerifier=${encodeURIComponent(codeVerifier)}`,
                     {
@@ -39,31 +41,32 @@ export default function AuthCallback() {
                     throw new Error(text);
                 }
 
-                const tokens =
-                    await response.json();
-
-
+                const tokens = await response.json();
 
                 saveTokens(tokens);
 
                 const syncResponse = await fetch(
-                    "http://localhost:8081/CUSTOMER-SERVICE/customers/me/sync",
+                    `${API_GATEWAY}/CUSTOMER-SERVICE/customers/me/sync`,
                     {
                         method: "POST",
                         headers: {
-                            Authorization: `Bearer ${tokens.access_token}`
+                            Authorization:
+                                `Bearer ${tokens.access_token}`
                         }
                     }
                 );
 
                 if (!syncResponse.ok) {
-                    const text = await syncResponse.text();
+                    const text =
+                        await syncResponse.text();
+
                     throw new Error(
                         `Customer sync failed: ${syncResponse.status} ${text}`
                     );
                 }
 
-                const customer = await syncResponse.json();
+                const customer =
+                    await syncResponse.json();
 
                 console.log(
                     "SOCIAL CUSTOMER SYNCED:",
@@ -87,14 +90,6 @@ export default function AuthCallback() {
                 );
 
                 window.location.href = "/";
-
-
-
-                // temporary for now
-                // next we will store access_token
-                // exactly the same way your normal login does
-
-
             } catch (error) {
                 console.error(
                     "SOCIAL LOGIN CALLBACK FAILED:",

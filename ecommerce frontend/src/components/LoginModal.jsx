@@ -9,6 +9,11 @@ import {
 } from "react-icons/fa";
 
 
+const API_GATEWAY =
+  import.meta.env.VITE_API_GATEWAY ||
+  "http://localhost:8081";
+
+
 
 
 
@@ -121,7 +126,7 @@ export default function LoginModal({
     );
 
     const authUrl =
-      `http://localhost:8081/auth/social-login/${provider}`
+      `${API_GATEWAY}/auth/social-login/${provider}`
       + `?codeChallenge=${encodeURIComponent(codeChallenge)}`;
 
     window.location.href = authUrl;

@@ -1,10 +1,16 @@
-const KEYCLOAK_URL = "http://localhost:8180";
-const REALM = "ecommerce-app";
-const CLIENT_ID = "AuthFlowClient";
+const KEYCLOAK_URL =
+  import.meta.env.VITE_KEYCLOAK_URL ||
+  "http://localhost:8180";
 
-console.log("KEYCLOAK URL:", import.meta.env.VITE_KEYCLOAK_URL);
-console.log("REALM:", import.meta.env.VITE_KEYCLOAK_REALM);
-console.log("CLIENT:", import.meta.env.VITE_KEYCLOAK_CLIENT_ID);
+const REALM =
+  import.meta.env.VITE_KEYCLOAK_REALM ||
+  "ecommerce-app";
+
+const CLIENT_ID =
+  import.meta.env.VITE_KEYCLOAK_CLIENT_ID ||
+  "AuthFlowClient";
+
+
 
 
 
