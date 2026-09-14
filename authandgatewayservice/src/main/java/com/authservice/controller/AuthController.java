@@ -1,5 +1,6 @@
 package com.authservice.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,31 +18,40 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private static final String KEYCLOAK_AUTH_URL =
-            "http://127.0.0.1:8180/realms/ecommerce-app"
-                    + "/protocol/openid-connect/auth";
+    private final String keycloakRealmUrl;
+    private final String clientId;
+    private final String redirectUri;
 
-    private static final String CLIENT_ID = "AuthFlowClient";
+    public AuthController(
+            @Value("${app.keycloak-realm-url}")
+            String keycloakRealmUrl,
 
-    private static final String REDIRECT_URI =
-            "http://localhost:5173/auth/callback";
+            @Value("${app.keycloak-client-id}")
+            String clientId,
 
-
+            @Value("${app.frontend-callback-url}")
+            String redirectUri
+    ) {
+        this.keycloakRealmUrl = keycloakRealmUrl;
+        this.clientId = clientId;
+        this.redirectUri = redirectUri;
+    }
 
     @PostMapping("/social-callback")
     public Mono<ResponseEntity<Map>> socialCallback(
             @RequestParam String code,
             @RequestParam String codeVerifier
     ) {
-
         String tokenUrl =
-                "http://127.0.0.1:8180/realms/ecommerce-app"
+                keycloakRealmUrl
                         + "/protocol/openid-connect/token";
 
         return WebClient.create()
                 .post()
                 .uri(tokenUrl)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .contentType(
+                        MediaType.APPLICATION_FORM_URLENCODED
+                )
                 .body(
                         BodyInserters
                                 .fromFormData(
@@ -50,7 +60,7 @@ public class AuthController {
                                 )
                                 .with(
                                         "client_id",
-                                        "AuthFlowClient"
+                                        clientId
                                 )
                                 .with(
                                         "code",
@@ -58,7 +68,7 @@ public class AuthController {
                                 )
                                 .with(
                                         "redirect_uri",
-                                        "http://localhost:5173/auth/callback"
+                                        redirectUri
                                 )
                                 .with(
                                         "code_verifier",
@@ -70,23 +80,22 @@ public class AuthController {
                 .map(ResponseEntity::ok);
     }
 
-
     @GetMapping("/social-login/{provider}")
     public ResponseEntity<Void> socialLogin(
             @PathVariable String provider,
             @RequestParam String codeChallenge
     ) {
-
-        String keycloakUrl =
-                "http://127.0.0.1:8180/realms/ecommerce-app"
+        String authorizationUrl =
+                keycloakRealmUrl
                         + "/protocol/openid-connect/auth";
 
-        String redirectUri =
-                "http://localhost:5173/auth/callback";
-
         String loginUrl =
-                keycloakUrl
-                        + "?client_id=AuthFlowClient"
+                authorizationUrl
+                        + "?client_id="
+                        + URLEncoder.encode(
+                        clientId,
+                        StandardCharsets.UTF_8
+                )
                         + "&response_type=code"
                         + "&scope=openid%20email%20profile"
                         + "&redirect_uri="
@@ -103,9 +112,9 @@ public class AuthController {
                         + "&kc_idp_hint="
                         + URLEncoder.encode(
                         provider,
-                        StandardCharsets.UTF_8)
-                                + "&prompt=select_account"
-                ;
+                        StandardCharsets.UTF_8
+                )
+                        + "&prompt=select_account";
 
         return ResponseEntity
                 .status(HttpStatus.FOUND)

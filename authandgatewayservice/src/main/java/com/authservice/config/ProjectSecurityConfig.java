@@ -2,6 +2,7 @@ package com.authservice.config;
 
 import com.authservice.exceptionhandling.CustomAccessDeniedHandler;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,7 +32,9 @@ public class ProjectSecurityConfig {
 
     @Bean
     SecurityWebFilterChain defaultSecurityFilterChain(
-            ServerHttpSecurity http) {
+            ServerHttpSecurity http,
+            @Value("${app.frontend-url}") String frontendUrl
+    ) {
 
 
         JwtAuthenticationConverter jwtAuthenticationConverter =
@@ -64,7 +67,7 @@ public class ProjectSecurityConfig {
                                         // React frontend
                                         config.setAllowedOrigins(
                                                 Collections.singletonList(
-                                                        "http://localhost:5173"
+                                                        frontendUrl
                                                 )
                                         );
 

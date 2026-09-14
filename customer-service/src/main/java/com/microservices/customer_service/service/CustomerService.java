@@ -40,6 +40,9 @@ public class CustomerService {
     @Value("${keycloak.realm}")
     private String keycloakRealm;
 
+    @Value("${keycloak.base-url}")
+    private String keycloakBaseUrl;
+
 
     @Autowired
     private RestTemplate restTemplate;
@@ -63,7 +66,7 @@ public class CustomerService {
                 new HttpEntity<>(body, headers);
 
         URI tokenUri = UriComponentsBuilder
-                .fromUriString("http://127.0.0.1:8180")
+                .fromUriString(keycloakBaseUrl)
                 .pathSegment(
                         "realms",
                         keycloakRealm,
@@ -106,7 +109,7 @@ public class CustomerService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         URI getRoleUri = UriComponentsBuilder
-                .fromUriString("http://127.0.0.1:8180")
+                .fromUriString(keycloakBaseUrl)
                 .pathSegment(
                         "admin",
                         "realms",
@@ -138,7 +141,7 @@ public class CustomerService {
         }
 
         URI assignRoleUri = UriComponentsBuilder
-                .fromUriString("http://127.0.0.1:8180")
+                .fromUriString(keycloakBaseUrl)
                 .pathSegment(
                         "admin",
                         "realms",
@@ -217,7 +220,7 @@ public class CustomerService {
                         headers
                 );
         URI createUserUri = UriComponentsBuilder
-                .fromUriString("http://127.0.0.1:8180")
+                .fromUriString(keycloakBaseUrl)
                 .pathSegment(
                         "admin",
                         "realms",
